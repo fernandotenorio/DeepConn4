@@ -19,7 +19,7 @@ class PolicyIter(object):
 		self.batch_size = batch_size
 		self.rows = rows
 		self.cols = cols
-		self.START_VERSION = 90
+		self.START_VERSION = 0
 
 
 	def policy_iter(self):
@@ -38,7 +38,7 @@ class PolicyIter(object):
 			
 			x = np.array(x)			
 			p = np.array(p)
-			r = np.array(r).reshape(x.shape[0], 1)			
+			r = np.array(r).reshape(x.shape[0], 1)
 
 			# trains current nnet
 			self.current_nn.model.fit(x, [p, r], batch_size=self.batch_size, epochs=1, verbose=1)			
@@ -49,12 +49,13 @@ class PolicyIter(object):
 			# pit the two
 			win_rate = Conn4Pit(self.current_nn, self.best_nn, n_sims=self.n_sims, n_games=self.n_games_pit, rows=self.rows, cols=self.cols).run()
 		 
-			if win_rate >= self.win_eps:				
+			if win_rate >= self.win_eps:
 				self.best_nn.model.set_weights(self.current_nn.model.get_weights())
+				#self.best_nn.save('models_deep/best_model6x7_{}.hdf5'.format(i + self.START_VERSION))
 				self.best_nn.save('models_conv/best_model6x7_{}.hdf5'.format(i + self.START_VERSION))
 			
 
-			print('{},{}'.format(i, win_rate))		
+			print('{},{}'.format(i, win_rate))
 
 
 	def execute_episode(self):
@@ -65,7 +66,7 @@ class PolicyIter(object):
 		move = 0
 
 		while True:
-			temp = 1 #1 if move < 10 else 0.1						
+			temp = 1#1 if move < 10 else 0.1				
 			p_a = mcts.get_action_prob(game, self.n_sims, temp=temp)
 			s_h = game.hash()
 			s_x = game.encode_board()
@@ -100,11 +101,12 @@ class PolicyIter(object):
 if __name__ == '__main__':
 	rows = 6
 	cols = 7
+	fname = None#'models_conv/best_model6x7_93.hdf5'
 	game = Conn4Game(rows, cols)
 	input_dim = game.encoded_board_dim()
 	output_dim = game.action_size()	
-	net1 = Conn4Net(input_dim, output_dim, load=True, fname='models_conv/best_model6x7_89.hdf5')
-	p = PolicyIter(nnet=net1, n_iters=100, n_episodes=50, n_sims=30, n_games_pit=30, batch_size=256, win_eps=0.55, rows=rows, cols=cols)
+	net1 = Conn4Net(input_dim, output_dim, load=fname is not None, fname=fname)
+	p = PolicyIter(nnet=net1, n_iters=5000, n_episodes=10, n_sims=40, n_games_pit=4, batch_size=32, win_eps=0.55, rows=rows, cols=cols)
 	p.policy_iter()	
 
 	

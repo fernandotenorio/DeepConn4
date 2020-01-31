@@ -16,7 +16,7 @@ class MCTS():
 
         self.Es = {}        # stores game.getGameEnded ended for board s
         self.Vs = {}        # stores game.getValidMoves for board s
-        self.cpuct = 1.4
+        self.cpuct = 1.5
 
     def get_action_prob(self, game, nsims, temp=1):
         """
@@ -33,10 +33,10 @@ class MCTS():
         s = game.hash()
         counts = [self.Nsa[(s,a)] if (s,a) in self.Nsa else 0 for a in range(game.action_size())]
 
-        if temp==0:
+        if temp == 0:
             bestA = np.argmax(counts)
             probs = [0]*len(counts)
-            probs[bestA]=1
+            probs[bestA] = 1
             return probs
 
         counts = [x**(1./temp) for x in counts]
@@ -107,7 +107,7 @@ class MCTS():
         for a in range(game.action_size()):
             if valids[a]:
                 if (s,a) in self.Qsa:
-                    u = self.Qsa[(s,a)] + self.cpuct*self.Ps[s][a]*math.sqrt(self.Ns[s])/(1+self.Nsa[(s,a)])
+                    u = self.Qsa[(s,a)] + self.cpuct*self.Ps[s][a]*math.sqrt(self.Ns[s])/(1 + self.Nsa[(s,a)])
                 else:
                     u = self.cpuct*self.Ps[s][a]*math.sqrt(self.Ns[s] + EPS)     # Q = 0 ?
 

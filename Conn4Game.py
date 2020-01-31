@@ -22,36 +22,36 @@ class Conn4Game(object):
 		self.last_move = None
 
 
-	# def get_actions(self):
-	# 	return [col for col in range(self.cols) if self.board[0][col] == 0]
-
 	def get_actions(self):
-		cols = [col for col in range(self.cols) if self.board[0][col] == 0]
-		rows = [self.rows - self.height[col] - 1 for col in cols]
-		return [self.cols * r + c for (r, c) in zip(rows, cols)]
+		return [col for col in range(self.cols) if self.board[0][col] == 0]
+
+	# def get_actions(self):
+	# 	cols = [col for col in range(self.cols) if self.board[0][col] == 0]
+	# 	rows = [self.rows - self.height[col] - 1 for col in cols]
+	# 	return [self.cols * r + c for (r, c) in zip(rows, cols)]
 
 	
-	# def apply_action(self, col):
-	# 	assert self.board[0][col] == 0, 'Illegal move attempt'
-	# 	idx = self.rows - self.height[col] - 1
-	# 	self.height[col]+= 1
-	# 	self.board[idx][col] = self.currentPlayer
-	# 	self.last_move = (idx, col)
-	# 	self.currentPlayer = 2 if self.currentPlayer == 1 else 1
-
-	def apply_action(self, idx):		
-		row = int(idx/self.cols)
-		col = idx % self.cols
-		assert self.board[row][col] == 0, 'Illegal move attempt'
-		assert self.board[0][col] == 0, 'Illegal move attempt'		
+	def apply_action(self, col):
+		assert self.board[0][col] == 0, 'Illegal move attempt'
+		idx = self.rows - self.height[col] - 1
 		self.height[col]+= 1
-		self.board[row][col] = self.currentPlayer
-		self.last_move = (row, col)
+		self.board[idx][col] = self.currentPlayer
+		self.last_move = (idx, col)
 		self.currentPlayer = 2 if self.currentPlayer == 1 else 1
+
+	# def apply_action(self, idx):		
+	# 	row = int(idx/self.cols)
+	# 	col = idx % self.cols
+	# 	assert self.board[row][col] == 0, 'Illegal move attempt'
+	# 	assert self.board[0][col] == 0, 'Illegal move attempt'		
+	# 	self.height[col]+= 1
+	# 	self.board[row][col] = self.currentPlayer
+	# 	self.last_move = (row, col)
+	# 	self.currentPlayer = 2 if self.currentPlayer == 1 else 1
 
 
 	def action_size(self):
-		return self.cols * self.rows
+		return 7#self.cols * self.rows
 
 
 	def game_ended(self, player):

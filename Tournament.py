@@ -37,14 +37,14 @@ def run_match(net1, net2, n_sims, n_games, rows=6, cols=7):
 	return net1, net2, score
 
 
-def run():
+def run(model_dir, delta):
 	n_cpu = max(1, mp.cpu_count() - 1)
 	print('Running using {} cpus'.format(n_cpu))
-	pairs, participants = get_participants()	
+	pairs, participants = get_participants(dir=model_dir, age_delta=delta)
 
 	pool = mp.Pool(n_cpu)
 	for net1, net2 in pairs:
-		pool.apply_async(run_match, args=(net1, net2, 30, 4, 6, 7), callback=log_results)
+		pool.apply_async(run_match, args=(net1, net2, 30, 10), callback=log_results)
 	
 	pool.close()
 	pool.join()	
@@ -61,7 +61,7 @@ def run():
 
 
 if __name__ == '__main__':	
-	points = run()
+	points = run('models_conv/', 3)
 	version = sorted(points.keys())
 	for v in version:
 		print('{},{}'.format(v, points[v]))

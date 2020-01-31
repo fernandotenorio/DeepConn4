@@ -31,18 +31,15 @@ class Conn4Net(object):
 	@staticmethod
 	def make_deep_net(input_dim, output_dim, lr=0.001):
 		input = Input(shape=input_dim)		
-		net = Dense(256, activation='relu')(input)
+		net = Dense(128, activation='relu')(input)
 		net = Flatten()(input)
-		net = Dense(256, activation='relu')(net)						
-		net = BatchNormalization()(net)		
+		net = Dense(128, activation='relu')(net)									
 
-		policy = Dense(256, activation='relu')(net)
-		policy = BatchNormalization()(policy)		
+		policy = Dense(128, activation='relu')(net)			
 		policy = Dense(output_dim)(policy)	
 		policy = Activation("softmax")(policy)
 
-		value = Dense(256, activation='relu')(net)
-		value = BatchNormalization()(value)		
+		value = Dense(128, activation='relu')(net)		
 		value = Dense(1)(value)		
 		value = Activation("tanh")(value)
 		
@@ -52,28 +49,28 @@ class Conn4Net(object):
 
 
 	@staticmethod
-	def make_conv_net(input_dim, output_dim, lr=0.001):
-		input = Input(shape=input_dim)		
-		net = Conv2D(256, (3, 3), activation='relu', padding='same')(input)
+	def make_conv_net(input_dim, output_dim):
+		input = Input(shape=input_dim)
+		net = Conv2D(128, (3, 3), activation='relu', padding='same')(input)
 		#net = MaxPooling2D()(net)
-		net = Conv2D(128, (3, 3), activation='relu')(net)
+		#net = Conv2D(512, (3, 3), activation='relu')(net)
 		#net = MaxPooling2D()(net)		
-		net = BatchNormalization()(net)		
+		net = BatchNormalization()(net)
 
-		policy = Conv2D(256, (1, 1), activation='relu')(net)
+		policy = Conv2D(128, (3, 3), activation='relu')(net)
 		policy = BatchNormalization()(policy)
-		policy = Flatten()(policy)
+		policy = Flatten()(policy)			
 		policy = Dense(output_dim)(policy)		
 		policy = Activation("softmax")(policy)
 
-		value = Conv2D(256, (1, 1), activation='relu')(net)
+		value = Conv2D(128, (3, 3), activation='relu')(net)
 		value = BatchNormalization()(value)	
-		value = Flatten()(value)
+		value = Flatten()(value)	
 		value = Dense(1)(value)		
 		value = Activation("tanh")(value)
 		
 		model = Model(inputs=input, outputs=[policy, value])
-		model.compile(loss=['categorical_crossentropy', 'mse'], optimizer = Adam(lr=lr))
+		model.compile(loss=['categorical_crossentropy', 'mse'], optimizer = Adam(lr=0.0001))
 		return model
 
 

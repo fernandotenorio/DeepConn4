@@ -60,11 +60,11 @@ class Conn4Pit(object):
 				mcts = mcts1 if player == self.net1 else mcts2
 				p = mcts.get_action_prob(game, self.n_sims, temp=0)	
 				a = np.argmax(p)		
-				game.apply_action(a)			
+				game.apply_action(a)
 				end, winner, _ = game.game_ended(1)
 
 			if winner == 2:
-				wins_net1+= 1			
+				wins_net1+= 1
 			elif winner is None:
 				draws+= 1
 
@@ -78,8 +78,7 @@ if __name__ == '__main__':
 	input_dim = game.encoded_board_dim()
 	output_dim = game.action_size()
 	
-	net1 = Conn4Net(input_dim, output_dim, load=True, fname='models/best_model6x7_98.hdf5')
-	net2 = Conn4Net(input_dim, output_dim, load=True, fname='models/best_model6x7_80.hdf5')
+	net1 = Conn4Net(input_dim, output_dim, load=True, fname='models_conv/best_model6x7_93.hdf5')
+	net2 = Conn4Net(input_dim, output_dim, load=True, fname='models_conv/best_model6x7_1.hdf5')
 
-	print(Conn4Pit(net1, net2, 50, 300, rows, cols).run())
-		
+	print(Conn4Pit(net1, net2, 100, 10, rows, cols).run())
